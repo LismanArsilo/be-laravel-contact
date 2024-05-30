@@ -12,5 +12,6 @@ Route::controller(ContactController::class)->group(function () {
     Route::get('/contact', 'getAllContact');
     Route::get('/contact/{id}', 'getOneContact');
     Route::post('/contact', 'createContact');
+    Route::put('/contact/{id}', 'updateContact');
     Route::delete('/contact/{id}', 'deleteContact');
 });

@@ -20,7 +20,6 @@ class ContactController extends Controller
     public function getAllContact(Request $request)
     {
         try {
-            Log::debug($request->query());
             $query = [
                 "page" => $request->query('page', $this->page),
                 "limit" => $request->query('length', $this->limit),
@@ -39,7 +38,7 @@ class ContactController extends Controller
                 $q->where('gender', $query['gender']);
             });
 
-            $contacts = $contactQuery->orderBy('id', 'desc')->paginate($query['limit']);
+            $contacts = $contactQuery->orderBy('updated_at', 'desc')->paginate($query['limit']);
 
             return response()->json(['status' => true, 'message' => 'Get All Contact Successfully', 'contacts' => $contacts], Response::HTTP_OK);
         } catch (\Throwable $th) {
@@ -65,7 +64,6 @@ class ContactController extends Controller
     public function createContact(Request $request)
     {
         try {
-            Log::debug($request->all());
             $validate = Validator::make($request->all(), [
                 'name' => 'required',
                 'address' => 'required',
@@ -115,6 +113,12 @@ class ContactController extends Controller
             }
 
             $validated = $validate->validated();
+
+            $contact->name = $validated['name'];
+            $contact->address = $validated['address'];
+            $contact->phone_number = $validated['phone_number'];
+            $contact->gender = $validated['gender'];
+            $contact->save();
 
             return response()->json(['status' => true, 'message' => 'Update Contact Successfully', 'contact' => $contact], Response::HTTP_OK);
         } catch (\Throwable $th) {
